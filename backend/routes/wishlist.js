@@ -1,140 +1,74 @@
-/*import express from 'express';
-import Wishlist from '../models/Wishlist.js';
-
+import express from "express";
+import verifyToken from "../middleware/authMiddleware.js";
+import Wishlist from "../models/Wishlist.js";
+import { Product } from "../models/Product.js";
 const router = express.Router();
 
-// ✅ GET wishlist by userId
-router.get('/', async (req, res) => {
+// GET wishlist
+router.get("/", verifyToken, async (req, res) => {
   try {
-    const { userId } = req.query;
-    if (!userId) return res.status(400).json({ message: 'userId is required' });
+    const wishlist = await Wishlist.findOne({ user: req.user.userId })
+      .populate("items.productId");   // ⭐ VERY IMPORTANT
 
-    const wishlist = await Wishlist.findOne({ userId });
-    res.json(wishlist ? wishlist.productIds : []);
-  } catch (err) {
-    console.error('Error fetching wishlist:', err);
-    res.status(500).json({ message: 'Error fetching wishlist', error: err });
+    if (!wishlist) return res.json([]);
+
+    const products = wishlist.items.map(item => item.productId);
+
+    res.json(products);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching wishlist" });
   }
 });
 
-// ✅ ADD product to wishlist
-router.post('/add', async (req, res) => {
-  try {
-    const { userId, productId } = req.body;
-    if (!userId || !productId) {
-      return res.status(400).json({ message: 'userId and productId are required' });
-    }
-
-    let wishlist = await Wishlist.findOne({ userId });
-    if (!wishlist) {
-      wishlist = new Wishlist({ userId, productIds: [productId] });
-    } else if (!wishlist.productIds.includes(productId)) {
-      wishlist.productIds.push(productId);
-    }
-
-    await wishlist.save();
-    res.json(wishlist.productIds);
-  } catch (err) {
-    console.error('Error adding to wishlist:', err);
-    res.status(500).json({ message: 'Error adding to wishlist', error: err });
-  }
-});
-
-// ✅ REMOVE product from wishlist
-router.delete('/remove/:productId', async (req, res) => {
-  try {
-    const { userId } = req.query;
-    const { productId } = req.params;
-
-    if (!userId || !productId) {
-      return res.status(400).json({ message: 'userId and productId are required' });
-    }
-
-    const wishlist = await Wishlist.findOne({ userId });
-    if (wishlist) {
-      wishlist.productIds = wishlist.productIds.filter(id => id !== productId);
-      await wishlist.save();
-    }
-
-    res.json(wishlist ? wishlist.productIds : []);
-  } catch (err) {
-    console.error('Error removing from wishlist:', err);
-    res.status(500).json({ message: 'Error removing from wishlist', error: err });
-  }
-});
-
-export default router;*/
-/*
-// routes/wishlist.js
-import express from 'express';
-import Wishlist from '../models/Wishlist.js';
-const router = express.Router();
-
-// get wishlist
-router.get('/', async (req, res) => {
-  try {
-    let wishlist = await Wishlist.findOne();
-    res.json(wishlist ? wishlist.productIds : []);
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch wishlist', error: err });
-  }
-});
-
-// add product to wishlist
-router.post('/add', async (req, res) => {
+// ADD to wishlist
+router.post("/add", verifyToken, async (req, res) => {
   try {
     const { productId } = req.body;
-    let wishlist = await Wishlist.findOne();
+
+    let wishlist = await Wishlist.findOne({ user: req.user.userId });
+
     if (!wishlist) {
-      wishlist = new Wishlist({ productIds: [productId] });
-    } else if (!wishlist.productIds.includes(productId)) {
-      wishlist.productIds.push(productId);
+      wishlist = new Wishlist({
+        user: req.user.userId,
+        items: [{ productId }]
+      });
+    } else {
+      if (!wishlist.items.some(item => item.productId.toString() === productId)) {
+        wishlist.items.push({ productId });
+      }
     }
+
     await wishlist.save();
-    res.json(wishlist.productIds);
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to add product', error: err });
+    res.json({ message: "Added to wishlist" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding to wishlist" });
   }
 });
 
-// remove product from wishlist
-router.delete('/remove/:productId', async (req, res) => {
+// REMOVE from wishlist
+router.delete("/remove/:id", verifyToken, async (req, res) => {
   try {
-    const { productId } = req.params;
-    const wishlist = await Wishlist.findOne();
-    if (wishlist) {
-      wishlist.productIds = wishlist.productIds.filter(id => id !== productId);
-      await wishlist.save();
-    }
-    res.json(wishlist ? wishlist.productIds : []);
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to remove product', error: err });
+    const productId = req.params.id;
+
+    const wishlist = await Wishlist.findOne({ user: req.user.userId });
+
+    if (!wishlist) return res.json({ message: "No wishlist found" });
+
+    wishlist.items = wishlist.items.filter(
+      item => item.productId.toString() !== productId
+    );
+
+    await wishlist.save();
+    res.json({ message: "Removed from wishlist" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error removing from wishlist" });
   }
 });
 
 export default router;
-*/
-import express from 'express';
-const router = express.Router();
-
-// Example: get user's wishlist
-router.get('/', (req, res) => {
-  res.json({ message: 'Your wishlist items' });
-});
-
-// Example: add product to wishlist
-router.post('/add', (req, res) => {
-  const { productId } = req.body;
-  res.json({ message: `Added product ${productId} to wishlist` });
-});
-
-// Example: remove product from wishlist
-router.delete('/remove/:id', (req, res) => {
-  const productId = req.params.id;
-  res.json({ message: `Removed product ${productId} from wishlist` });
-});
-
-export default router;
-
-
-

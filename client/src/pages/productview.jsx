@@ -79,22 +79,20 @@ const ProductView = () => {
               alt={product.name}
               onError={(e) => { e.target.src = '/placeholder.jpg'; }}
             />
-            {Array.isArray(product.images) && product.images.length > 1 && (
-  <div className="small-img-group">
-    {product.images.map((img, index) => (
-      <div className="small-img-col" key={index}>
-        <img
-          src={img}
-          className={`small-img ${mainImage === img ? 'active' : ''}`}
-          alt={`Thumbnail ${index + 1}`}
-          onClick={() => setMainImage(img)}
-        />
-      </div>
-    ))}
-  </div>
-)}
-
-           
+            {product.images && product.images.length > 1 && (
+              <div className="small-img-group">
+                {product.images.map((img, index) => (
+                  <div className="small-img-col" key={index}>
+                    <img
+                      src={img}
+                      className={`small-img ${mainImage === img ? 'active' : ''}`}
+                      alt={`Thumbnail ${index + 1}`}
+                      onClick={() => setMainImage(img)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

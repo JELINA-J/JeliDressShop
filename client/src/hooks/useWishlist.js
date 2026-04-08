@@ -1,41 +1,60 @@
-// src/hooks/useWishlist.js
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 export default function useWishlist() {
-  const userId = localStorage.getItem('userId');
   const [wishlistIds, setWishlistIds] = useState([]);
+  const token = localStorage.getItem("token");
+  const location = useLocation();   // 👈 important
 
+  const fetchWishlist = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/wishlist",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setWishlistIds(res.data.map(product => product._id));
+    } catch (err) {
+      console.error("Failed to fetch wishlist", err);
+    }
+  };
+
+  // 🔥 Refetch every time route changes
   useEffect(() => {
-    if (!userId) return;
-    const fetchWishlist = async () => {
-      try {
-        const res = await axios.get('http://localhost:5000/api/wishlist', {
-          params: { userId }
-        });
-        setWishlistIds(res.data);  // expects array of productIds
-      } catch (err) {
-        console.error('Failed to fetch wishlist', err);
-      }
-    };
+    if (!token) return;
     fetchWishlist();
-  }, [userId]);
+  }, [location.pathname]);   // 👈 THIS FIXES IT
 
   const toggleWishlist = async (e, productId) => {
     e.preventDefault();
     e.stopPropagation();
+
     try {
       if (wishlistIds.includes(productId)) {
-        await axios.delete(`http://localhost:5000/api/wishlist/remove/${productId}`, {
-          params: { userId }
-        });
-        setWishlistIds(prev => prev.filter(id => id !== productId));
+        await axios.delete(
+          `http://localhost:5000/api/wishlist/remove/${productId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
       } else {
-        await axios.post('http://localhost:5000/api/wishlist/add', { userId, productId });
-        setWishlistIds(prev => [...prev, productId]);
+        await axios.post(
+          "http://localhost:5000/api/wishlist/add",
+          { productId },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
       }
+
+      fetchWishlist();  // keep synced
     } catch (err) {
-      console.error('Error updating wishlist', err);
+      console.error("Error updating wishlist", err);
     }
   };
 

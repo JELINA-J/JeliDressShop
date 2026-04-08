@@ -6,7 +6,7 @@ import authRoutes from './routes/auth.js';
 import { Product, Productview } from './models/Product.js';
 import productRoutes from './routes/products.js';
 import wishlistRoutes from './routes/wishlist.js';
-
+import cartRoutes from "./routes/cart.js";
 
 dotenv.config();
 
@@ -20,33 +20,12 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/wishlist', wishlistRoutes);
-
+app.use("/api/cart", cartRoutes);
 // Schema & Models
 
 
 const Products = Product;
-//const Productview = mongoose.model('productview', Product.schema);
 
-// Routes
-
-// Fetch all products
-
-// Fetch single product view by id
-// Fetch all products from productview
-
-
-/*
-// Fetch productview featured
-app.get('/api/productview/category/featured', async (req, res) => {
-  try {
-    const products = await Productview.find({ category: 'featured' });
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch featured products' });
-  }
-});*/
-
-// Connect DB & start server
 mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('✅ Connected to MongoDB');

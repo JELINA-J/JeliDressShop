@@ -9,6 +9,7 @@ const AuthPage = () => {
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
 
+  
   // States for login inputs
   const [loginUsername, setLoginUsername] = useState('');
   const [loginIdentifier, setLoginIdentifier] = useState('');
@@ -49,7 +50,8 @@ const [message, setMessage] = useState('');
 
       console.log(res.data);
       //alert(`Welcome back, ${res.data.username}!`);
-      localStorage.setItem('username', res.data.username);
+sessionStorage.setItem('token', res.data.token);
+      sessionStorage.setItem('username', res.data.username);
       window.location.href = '/home';
     } catch (err) {
       console.error('❌ Login error:', err.response ? err.response.data : err.message);

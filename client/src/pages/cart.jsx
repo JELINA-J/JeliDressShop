@@ -62,8 +62,8 @@ const CartPage = () => {
                 <div className="cart-container">
                     <div className="cart-items">
                         {cartItems.map(item => (
-                            <div key={`${item.id}-${item.size || ''}`} className="cart-item">
-                                <Link to={`/product/${item.id}`}>
+                            <div key={item._id} className="cart-item">
+                               <Link to={`/product/${item._id}`}>
                                     <img
                                         src={item.image || '/images/placeholder.jpg'}
                                         alt={item.name}
@@ -88,7 +88,7 @@ const CartPage = () => {
 
                                     <div className="quantity-controls">
                                         <button
-                                            onClick={() => updateQuantity(item.id, item.size, item.quantity - 1)}
+                                            onClick={() => updateQuantity(item._id, item.quantity - 1)}
                                         >
                                             −
                                         </button>
@@ -96,19 +96,16 @@ const CartPage = () => {
                                             type="number"
                                             value={item.quantity}
                                             min="1"
-                                            onChange={(e) =>
-                                                updateQuantity(item.id, item.size, e.target.value)
-                                            }
+                                           onChange={(e) => updateQuantity(item._id, e.target.value)}
                                         />
                                         <button
-                                            onClick={() => updateQuantity(item.id, item.size, item.quantity + 1)}
+                                           onClick={() => updateQuantity(item._id, item.quantity + 1)}
                                         >
                                             +
                                         </button>
                                         <button
                                             className="remove-btn"
-                                            onClick={() => removeFromCart(item.id, item.size)}
-                                        >
+                                            onClick={() => removeFromCart(item._id)}                                       >
                                             ×
                                         </button>
                                     </div>

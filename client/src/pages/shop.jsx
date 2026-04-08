@@ -27,16 +27,79 @@ const wishlistIds = Array.isArray(wishlist) ? wishlist.map(item => item._id) : [
   const userId = localStorage.getItem('userId'); // must store after login
 
  
-const toggleWishlist = (e, productId) => {
+useEffect(() => {
+  async function fetchWishlist() {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) return;
+
+      const res = await axios.get(
+        "http://localhost:5000/api/wishlist",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      // If backend returns products directly:
+      const ids = res.data.map(product => product._id);
+      setWishlist(ids);
+
+    } catch (err) {
+      console.error("Failed to load wishlist", err);
+    }
+  }
+
+  fetchWishlist();
+}, []);
+
+const toggleWishlist = async (e, productId) => {
   e.preventDefault();
   e.stopPropagation();
 
-  if (wishlist.includes(productId)) {
-    setWishlist(prev => prev.filter(id => id !== productId));
-  } else {
-    setWishlist(prev => [...prev, productId]);
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please login first");
+      return;
+    }
+
+    if (wishlist.includes(productId)) {
+
+      await axios.delete(
+        `http://localhost:5000/api/wishlist/remove/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setWishlist(prev => prev.filter(id => id !== productId));
+
+    } else {
+
+      await axios.post(
+        "http://localhost:5000/api/wishlist/add",
+        { productId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setWishlist(prev => [...prev, productId]);
+    }
+
+  } catch (err) {
+    console.error("Failed to toggle wishlist", err);
   }
 };
+
 
   const handleAddToCart = (e, product) => {
     e.preventDefault();
@@ -112,8 +175,8 @@ const products2 = products.filter(p => p.sections.includes('shoppage')).slice(16
               className="wishlist-btn"
 onClick={(e) => toggleWishlist(e, product._id || product.id)}
             >
-              <FaHeart style={{ color: wishlistIds.includes(product._id)
-? 'red' : '' }} />
+              <FaHeart style={{ color:wishlist.includes(product._id) ? 'red' : '' }} />
+              
             </button>
           </div>
         ))}

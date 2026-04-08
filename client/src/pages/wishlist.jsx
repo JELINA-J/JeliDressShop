@@ -1,97 +1,126 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { FaStar, FaShoppingCart, FaHeart } from 'react-icons/fa';
-import { useCart } from '../context/CartContext';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { FaStar, FaShoppingCart, FaHeart } from "react-icons/fa";
+import { useCart } from "../context/CartContext";
 
 const Wishlist = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
-  const [products, setProducts] = useState([]);          // dynamic products
-  const [wishlistIds, setWishlistIds] = useState([]);
+
+  const [wishlistProducts, setWishlistProducts] = useState([]);
   const [addedProductId, setAddedProductId] = useState(null);
 
-  // Fetch products from backend on load
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await axios.get('http://localhost:5000/api/products'); // adjust your backend URL
-        setProducts(res.data);
-      } catch (err) {
-        console.error('Failed to fetch products', err);
-      }
-    };
-    fetchProducts();
+  const token = localStorage.getItem("token");
 
-    // Load wishlist from localStorage
-    const stored = JSON.parse(localStorage.getItem('wishlist')) || [];
-    setWishlistIds(stored);
-  }, []);
+  const fetchWishlist = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/wishlist",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setWishlistProducts(res.data);
+
+    } catch (err) {
+      console.error("Failed to fetch wishlist", err);
+    }
+  };
+
+  useEffect(() => {
+    if (token) fetchWishlist();
+  }, [token]);
 
   const handleAddToCart = (e, product) => {
     e.preventDefault();
     e.stopPropagation();
     addToCart(product);
-    setAddedProductId(product.id);
+    setAddedProductId(product._id);
     setTimeout(() => setAddedProductId(null), 2000);
   };
 
-  // Remove from wishlist and DB
   const handleRemoveFromWishlist = async (e, productId) => {
     e.preventDefault();
     e.stopPropagation();
-    const updated = wishlistIds.filter(id => id !== productId);
-    setWishlistIds(updated);
-    localStorage.setItem('wishlist', JSON.stringify(updated));
 
     try {
-      await axios.delete(`http://localhost:5000/api/wishlist/remove/${productId}`);
+      await axios.delete(
+        `http://localhost:5000/api/wishlist/remove/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // 🔥 Re-fetch instead of manual filter
+      fetchWishlist();
+
     } catch (err) {
-      console.error('Failed to remove from wishlist in DB', err);
+      console.error("Failed to remove from wishlist", err);
     }
   };
-
-  // Filter products that are in wishlist
-  const wishlistProducts = products.filter(p => wishlistIds.includes(p.id));
 
   return (
     <section className="section-p1" id="product1">
       <h2>My Wishlist</h2>
       <p>Products you have liked</p>
+
       <div className="pro-container">
-        {wishlistProducts.length === 0 && <p>Your wishlist is empty!</p>}
+        {wishlistProducts.length === 0 && (
+          <p>Your wishlist is empty!</p>
+        )}
+
         {wishlistProducts.map(product => (
           <div
-            key={product.id}
+            key={product._id}
             className="pro"
-            onClick={() => navigate(`/product/${product.id}`)}
+            onClick={() => navigate(`/product/${product._id}`)}
           >
             <img src={product.image} alt={product.name} />
+
             <div className="des">
               <span>{product.brand}</span>
               <h5>{product.name}</h5>
+
               <div className="star">
-                {[...Array(product.rating)].map((_, i) => (
+                {[...Array(product.rating || 0)].map((_, i) => (
                   <FaStar key={i} className="checked" />
                 ))}
               </div>
-              <h4>₹{product.price.toFixed(2)}</h4>
+
+              <h4>₹{product.price?.toFixed(2)}</h4>
+
               {product.discount > 0 && (
-                <span className="discount-badge">-{product.discount}% OFF</span>
+                <span className="discount-badge">
+                  -{product.discount}% OFF
+                </span>
               )}
             </div>
+
             <button
               onClick={(e) => handleAddToCart(e, product)}
-              className={`cart-btn ${addedProductId === product.id ? 'added' : ''}`}
+              className={`cart-btn ${
+                addedProductId === product._id ? "added" : ""
+              }`}
             >
               <FaShoppingCart />
-              {addedProductId === product.id && <span className="added-text">✓ Added</span>}
+              {addedProductId === product._id && (
+                <span className="added-text">✓ Added</span>
+              )}
             </button>
+
             <button
               className="wishlist-btn"
-              onClick={(e) => handleRemoveFromWishlist(e, product.id)}
+              onClick={(e) =>
+                handleRemoveFromWishlist(e, product._id)
+              }
             >
-              <FaHeart style={{ color: 'red' }} />
+              <FaHeart style={{ color: "red" }} />
             </button>
           </div>
         ))}

@@ -22,23 +22,39 @@ router.post('/register', async (req, res) => {
   }
 });
 export default router;
-import jwt from 'jsonwebtoken';
 
 // Login user
+import jwt from 'jsonwebtoken';
+
 router.post('/login', async (req, res) => {
   try {
     const { identifier, password } = req.body;
+
     const user = await User.findOne({
       $or: [{ email: identifier }, { name: identifier }]
     });
-    if (!user) return res.status(400).json({ message: 'Invalid email/username or password' });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid email/username or password' });
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
 
-    res.json({ message: 'Login successful', token, username: user.name });
+    // ✅ ONLY SEND DATA
+    res.json({
+      token,
+      username: user.name
+    });
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

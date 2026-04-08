@@ -13,9 +13,7 @@ const Home = () => {
   const [newArrivals, setNewArrivals] = useState([]);
   const [addedProductId, setAddedProductId] = useState(null);
   const username = localStorage.getItem('username');
- // const { wishlistIds, toggleWishlist } = useWishlist();
-  const [ setWishlistIds] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
+const [wishlist, setWishlist] = useState([]);
   const wishlistIds = Array.isArray(wishlist) ? wishlist.map(item => item._id) : [];
 
   const features = [
@@ -43,101 +41,79 @@ const Home = () => {
   }, []);
 
 
-  // Load wishlist
-/*
   useEffect(() => {
-    const storedWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-    setWishlist(storedWishlist);
-  }, []);
-
-  const toggleWishlist = (e, productId) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    let updatedWishlist;
-    if (wishlist.includes(productId)) {
-      updatedWishlist = wishlist.filter(id => id !== productId);
-    } else {
-      updatedWishlist = [...wishlist, productId];
-    }
-
-    setWishlist(updatedWishlist);
-    localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
-  };
-*/
-useEffect(() => {
-    async function fetchWishlist() {
-      try {
-        const res = await axios.get('http://localhost:5000/api/wishlist');
-        // Map wishlist items to just their productId
-        const ids = res.data.map(item => item.productId || item._id);
-        setWishlist(ids);
-      } catch (err) {
-        console.error('Failed to load wishlist', err);
-      }
-    }
-    fetchWishlist();
-  }, []);
-const toggleWishlist = async (e, productId) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    try {
-      if (wishlist.includes(productId)) {
-        await axios.delete(`http://localhost:5000/api/wishlist/remove/${productId}`);
-        setWishlist(prev => prev.filter(id => id !== productId));
-      } else {
-        await axios.post('http://localhost:5000/api/wishlist/add', { productId });
-        setWishlist(prev => [...prev, productId]);
-      }
-    } catch (err) {
-      console.error('Failed to toggle wishlist', err);
-    }
-  };
-/*useEffect(() => {
   async function fetchWishlist() {
     try {
-      const res = await axios.get('http://localhost:5000/api/wishlist');
-      setWishlist(res.data);
-    } catch (err) {
-      console.error('Failed to load wishlist', err);
-    }
-  }
-  fetchWishlist();
-}, []);*/
-useEffect(() => {
-  async function fetchWishlist() {
-    try {
-      const res = await axios.get('http://localhost:5000/api/wishlist');
-      const ids = res.data.map(item => item.productId || item._id); // ensure it's an array of IDs
+      const token = localStorage.getItem("token");
+
+      if (!token) return;
+
+      const res = await axios.get(
+        "http://localhost:5000/api/wishlist",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      // If backend returns products directly:
+      const ids = res.data.map(product => product._id);
       setWishlist(ids);
+
     } catch (err) {
-      console.error('Failed to load wishlist', err);
+      console.error("Failed to load wishlist", err);
     }
   }
+
   fetchWishlist();
 }, []);
 
-
-/*const toggleWishlist = async (e, productId) => {
+const toggleWishlist = async (e, productId) => {
   e.preventDefault();
   e.stopPropagation();
 
   try {
-    if (wishlist.includes(productId)) {
-      // remove
-      const res = await axios.delete(`http://localhost:5000/api/wishlist/remove/${productId}`);
-      setWishlist(res.data);
-    } else {
-      // add
-      const res = await axios.post('http://localhost:5000/api/wishlist/add', { productId });
-      setWishlist(res.data);
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please login first");
+      return;
     }
+
+    if (wishlist.includes(productId)) {
+
+      await axios.delete(
+        `http://localhost:5000/api/wishlist/remove/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setWishlist(prev => prev.filter(id => id !== productId));
+
+    } else {
+
+      await axios.post(
+        "http://localhost:5000/api/wishlist/add",
+        { productId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setWishlist(prev => [...prev, productId]);
+    }
+
   } catch (err) {
-    console.error('Failed to toggle wishlist', err);
+    console.error("Failed to toggle wishlist", err);
   }
 };
-*/
+
   const handleAddToCart = (e, product) => {
     e.preventDefault();
     e.stopPropagation();
@@ -271,8 +247,11 @@ useEffect(() => {
                 className="wishlist-btn"
                 onClick={(e) => toggleWishlist(e, product._id)}
               >
-                <FaHeart style={{ color: wishlist.includes(product._id)
- ? 'red' : '' }} />
+                <FaHeart
+  style={{
+    color: wishlist.includes(product._id) ? "red" : ""
+  }}
+/>
               </button>
             </div>
           ))}
