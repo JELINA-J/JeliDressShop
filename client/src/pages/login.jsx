@@ -25,7 +25,7 @@ const [message, setMessage] = useState('');
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('https://jelidressshop-1.onrender.com/api/auth/register', {
+      const res = await axios.post('https://jelidressshop-1-1.onrender.com/api/auth/register', {
         name: registerUsername,
         email: registerEmail,
         password: registerPassword
@@ -44,7 +44,7 @@ const [message, setMessage] = useState('');
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('https://jelidressshop-1.onrender.com/api/auth/login', {
+      const res = await axios.post('https://jelidressshop-1-1.onrender.com/api/auth/login', {
         identifier: loginIdentifier,
         password: loginPassword
       });
