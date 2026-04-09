@@ -16,7 +16,7 @@ const wishlistIds = Array.isArray(wishlist) ? wishlist.map(item => item._id) : [
   const { addToCart } = useCart();
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products/category/shop')
+    fetch('https://jelidressshop-1.onrender.com/api/products/category/shop')
 
       .then(res => res.json())
       .then(data => {
@@ -35,7 +35,7 @@ useEffect(() => {
       if (!token) return;
 
       const res = await axios.get(
-        "http://localhost:5000/api/wishlist",
+        "https://jelidressshop-1.onrender.com/api/wishlist",
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -70,7 +70,7 @@ const toggleWishlist = async (e, productId) => {
     if (wishlist.includes(productId)) {
 
       await axios.delete(
-        `http://localhost:5000/api/wishlist/remove/${productId}`,
+        `https://jelidressshop-1.onrender.com/api/wishlist/remove/${productId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -83,7 +83,7 @@ const toggleWishlist = async (e, productId) => {
     } else {
 
       await axios.post(
-        "http://localhost:5000/api/wishlist/add",
+        "https://jelidressshop-1.onrender.com/api/wishlist/add",
         { productId },
         {
           headers: {
