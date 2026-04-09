@@ -17,7 +17,7 @@ export const CartProvider = ({ children }) => {
       }
 
       try {
-        const res = axios.get("https://jelidressshop-1.onrender.com/api/cart"
+        const res = await axios.get("https://jelidressshop-1.onrender.com/api/cart"
 , {
           headers: { Authorization: `Bearer ${token}` }
         });
