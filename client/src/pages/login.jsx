@@ -53,8 +53,8 @@ const [message, setMessage] = useState('');
 
       console.log(res.data);
       //alert(`Welcome back, ${res.data.username}!`);
-sessionStorage.setItem('token', res.data.token);
-      sessionStorage.setItem('username', res.data.username);
+localStorage.setItem('token', res.data.token);
+localStorage.setItem('username', res.data.username);
 
 
 navigate('/home');    } catch (err) {
