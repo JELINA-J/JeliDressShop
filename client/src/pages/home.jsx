@@ -31,8 +31,8 @@ const [wishlist, setWishlist] = useState([]);
       try {
         const res = await axios.get('https://jelidressshop-1-1.onrender.com/api/products/section/homepage');
         // You can still filter by category if you want to split featured vs new
-        setFeaturedProducts(res.data.filter(p => p.category.includes("featured")));
-        setNewArrivals(res.data.filter(p => p.category.includes("new")));
+        setFeaturedProducts(res.data.filter(p => p.sections?.includes("featured")));
+setNewArrivals(res.data.filter(p => p.sections?.includes("new")));
       } catch (error) {
         console.error('Error fetching homepage products:', error);
       }
