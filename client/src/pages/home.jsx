@@ -33,8 +33,8 @@ const [wishlist, setWishlist] = useState([]);
         // You can still filter by category if you want to split featured vs new
               console.log("API DATA 👉", res.data);  // 👈 ADD THIS
 
-        setFeaturedProducts(res.data.filter(p => p.sections?.includes("featured")));
-setNewArrivals(res.data.filter(p => p.sections?.includes("new")));
+       setFeaturedProducts(res.data);
+setNewArrivals(res.data);
       } catch (error) {
         console.error('Error fetching homepage products:', error);
       }
@@ -167,7 +167,7 @@ const toggleWishlist = async (e, productId) => {
               key={product._id}
               className="pro"
               onClick={() => {
-                localStorage.setItem('sourcePage', 'home');
+                sessionStorage.setItem('sourcePage', 'home');
                 navigate(`/product/${product._id}`);
               }}
             >
