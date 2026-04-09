@@ -17,7 +17,7 @@ export const CartProvider = ({ children }) => {
       }
 
       try {
-        const res = await axios.get("https://jelidressshop-1.onrender.com/api/cart"
+        const res = await axios.get("https://jelidressshop-1-1.onrender.com/api/cart"
 , {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -53,7 +53,7 @@ export const CartProvider = ({ children }) => {
 
       try {
         await axios.post(
-          "https://jelidressshop-1.onrender.com/api/cart/save",
+          "https://jelidressshop-1-1.onrender.com/api/cart/save",
           { items: formattedItems },
           { headers: { Authorization: `Bearer ${token}` } }
         );
