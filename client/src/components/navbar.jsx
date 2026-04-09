@@ -11,7 +11,7 @@ const Header = () => {
 
   // ✅ Check login status whenever page changes
   useEffect(() => {
-const token = sessionStorage.getItem("token");
+const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
   }, [location]);
 
@@ -27,8 +27,8 @@ const token = sessionStorage.getItem("token");
 
   // ✅ Logout Function
   const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("username");
+localStorage.removeItem("token");
+localStorage.removeItem("username");
     setIsLoggedIn(false);
     navigate("/");
   };
