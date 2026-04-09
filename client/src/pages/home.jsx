@@ -29,7 +29,7 @@ const [wishlist, setWishlist] = useState([]);
   useEffect(() => {
     async function fetchHomepageProducts() {
       try {
-        const res = await axios.get('http://localhost:5000/api/products/section/homepage');
+        const res = await axios.get('https://jelidressshop-1.onrender.com/api/products/section/homepage');
         // You can still filter by category if you want to split featured vs new
         setFeaturedProducts(res.data.filter(p => p.category.includes("featured")));
         setNewArrivals(res.data.filter(p => p.category.includes("new")));
@@ -49,7 +49,7 @@ const [wishlist, setWishlist] = useState([]);
       if (!token) return;
 
       const res = await axios.get(
-        "http://localhost:5000/api/wishlist",
+        "https://jelidressshop-1.onrender.com/api/wishlist",
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -84,7 +84,7 @@ const toggleWishlist = async (e, productId) => {
     if (wishlist.includes(productId)) {
 
       await axios.delete(
-        `http://localhost:5000/api/wishlist/remove/${productId}`,
+        `https://jelidressshop-1.onrender.com/api/wishlist/remove/${productId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -97,7 +97,7 @@ const toggleWishlist = async (e, productId) => {
     } else {
 
       await axios.post(
-        "http://localhost:5000/api/wishlist/add",
+        "https://jelidressshop-1.onrender.com/api/wishlist/add",
         { productId },
         {
           headers: {
