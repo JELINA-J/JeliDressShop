@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
+const navigate = useNavigate();
 const AuthPage = () => {
   const [activeForm, setActiveForm] = useState('login');
 
@@ -52,8 +54,9 @@ const [message, setMessage] = useState('');
       //alert(`Welcome back, ${res.data.username}!`);
 sessionStorage.setItem('token', res.data.token);
       sessionStorage.setItem('username', res.data.username);
-      window.location.href = '/home';
-    } catch (err) {
+
+
+navigate('/home');    } catch (err) {
       console.error('❌ Login error:', err.response ? err.response.data : err.message);
     setMessage('Login failed. Please check your credentials.');
     }
