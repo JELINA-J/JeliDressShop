@@ -165,7 +165,7 @@ const toggleWishlist = async (e, productId) => {
               key={product._id}
               className="pro"
               onClick={() => {
-                sessionStorage.setItem('sourcePage', 'home');
+                localStorage.setItem('sourcePage', 'home');
                 navigate(`/product/${product._id}`);
               }}
             >
