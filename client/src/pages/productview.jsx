@@ -19,7 +19,7 @@ const ProductView = () => {
 
   useEffect(() => {
   async function fetchProduct() {
-    const res = await fetch(`http://localhost:5000/api/products/${productId}`);
+    const res = await fetch(`https://jelidressshop-1.onrender.com/api/products/${productId}`);
     const data = await res.json();
     setProduct(data);
     setMainImage(data.images[0]);
