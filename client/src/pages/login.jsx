@@ -37,9 +37,8 @@ const handleRegister = async (e) => {
     console.log('✅ Registered:', res.data);
     setMessage('Registered successfully! 🎉');
 
-    // OPTIONAL: store token
-    localStorage.setItem('token', res.data.token);
-localStorage.setItem('username', res.data.name);
+     const username = res.data.name || res.data.username || registerUsername;
+    localStorage.setItem('username', username);
 
     // ✅ Redirect using React Router
     navigate('/home');
