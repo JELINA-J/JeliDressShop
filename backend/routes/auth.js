@@ -1,13 +1,11 @@
 import express from 'express';
 import User from '../models/User.js';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-// Register new user
-
-import jwt from 'jsonwebtoken';
-
+// ================= REGISTER =================
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -17,17 +15,8 @@ router.post('/register', async (req, res) => {
     const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
 
-    // 🔥 generate token
-    const token = jwt.sign(
-      { userId: newUser._id },
-      process.env.JWT_SECRET,
-      { expiresIn: '1d' }
-    );
-
-    // ✅ send token + username
     res.status(201).json({
-      token,
-      username: newUser.name
+      message: 'User registered successfully'
     });
 
   } catch (err) {
@@ -36,8 +25,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Login user
-
+// ================= LOGIN =================
 router.post('/login', async (req, res) => {
   try {
     const { identifier, password } = req.body;
@@ -61,7 +49,6 @@ router.post('/login', async (req, res) => {
       { expiresIn: '1d' }
     );
 
-    // ✅ ONLY SEND DATA
     res.json({
       token,
       username: user.name
@@ -71,3 +58,6 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// ✅ ALWAYS export at the END
+export default router;
