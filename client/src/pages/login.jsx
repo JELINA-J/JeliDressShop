@@ -20,51 +20,37 @@ const AuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // ================= REGISTER =================
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+const handleRegister = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-    try {
-      // Step 1: Register
-      await axios.post(
-        'https://jelidressshop-1-1.onrender.com/api/auth/register',
-        {
-          name: registerUsername,
-          email: registerEmail,
-          password: registerPassword
-        }
-      );
+  try {
+    const res = await axios.post(
+      'https://jelidressshop-1-1.onrender.com/api/auth/register',
+      {
+        name: registerUsername,
+        email: registerEmail,
+        password: registerPassword
+      }
+    );
 
-      // Step 2: Auto Login
-      const loginRes = await axios.post(
-        'https://jelidressshop-1-1.onrender.com/api/auth/login',
-        {
-          identifier: registerEmail,
-          password: registerPassword
-        }
-      );
+    // ✅ Directly use register response
+    localStorage.setItem('token', res.data.token);
 
-      // Step 3: Store token & username
-      localStorage.setItem('token', loginRes.data.token);
+    const username = res.data.username ?? registerUsername;
+    localStorage.setItem('username', username);
 
-      const username =
-        loginRes.data.username ?? registerUsername;
+    setMessage(`Welcome, ${username}! 🎉`);
 
-      localStorage.setItem('username', username);
+    navigate('/home');
 
-      setMessage('Registered and logged in successfully! 🎉');
-
-      // Step 4: Navigate
-      navigate('/home');
-
-    } catch (err) {
-      console.error('Register error:', err.response?.data || err.message);
-      setMessage(err.response?.data?.message || 'Registration failed.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  } catch (err) {
+    console.error('Register error:', err.response?.data || err.message);
+    setMessage(err.response?.data?.message || 'Registration failed.');
+  } finally {
+    setIsLoading(false);
+  }
+};
   // ================= LOGIN =================
   const handleLogin = async (e) => {
     e.preventDefault();
