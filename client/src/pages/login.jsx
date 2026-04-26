@@ -20,22 +20,30 @@ const [message, setMessage] = useState('');
 
   // Handler for register
   const handleRegister = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', {
-        name: registerUsername,
-        email: registerEmail,
-        password: registerPassword
-      });
-      console.log('✅ Registered:', res.data);
-          setMessage('Registered successfully! 🎉.Login to continue');
+  e.preventDefault();
+  try {
+    const res = await axios.post('http://localhost:5000/api/auth/register', {
+      name: registerUsername,
+      email: registerEmail,
+      password: registerPassword
+    });
 
-    } catch (err) {
-      console.error('❌ Register error:', err.response ? err.response.data : err.message);
-          setMessage('Registration failed. Please try again.');
+    console.log('✅ Registered:', res.data);
 
+    // OPTIONAL: store token if backend returns it
+    if (res.data.token) {
+      sessionStorage.setItem('token', res.data.token);
+      sessionStorage.setItem('username', res.data.username);
     }
-  };
+
+    // ✅ Redirect to home page
+    window.location.href = '/home';
+
+  } catch (err) {
+    console.error('❌ Register error:', err.response ? err.response.data : err.message);
+    setMessage('Registration failed. Please try again.');
+  }
+};
 
   // Handler for login (implement your backend route later)
   const handleLogin = async (e) => {
