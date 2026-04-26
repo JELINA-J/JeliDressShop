@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const AuthPage = () => {
+  const navigate = useNavigate();
+
   const [activeForm, setActiveForm] = useState('login');
 
   // States for register inputs
@@ -20,6 +23,7 @@ const [message, setMessage] = useState('');
 
   // Handler for register
   const handleRegister = async (e) => {
+<<<<<<< HEAD
   e.preventDefault();
   try {
     const res = await axios.post('http://localhost:5000/api/auth/register', {
@@ -27,6 +31,17 @@ const [message, setMessage] = useState('');
       email: registerEmail,
       password: registerPassword
     });
+=======
+    e.preventDefault();
+    try {
+      const res = await axios.post('https://jelidressshop-1-1.onrender.com/api/auth/register', {
+        name: registerUsername,
+        email: registerEmail,
+        password: registerPassword
+      });
+      console.log('✅ Registered:', res.data);
+          setMessage('Registered successfully! 🎉.Login to continue');
+>>>>>>> 6eb21d46897c185918f7a2f5076819a1d87f482d
 
     console.log('✅ Registered:', res.data);
 
@@ -49,7 +64,7 @@ const [message, setMessage] = useState('');
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', {
+      const res = await axios.post('https://jelidressshop-1-1.onrender.com/api/auth/login', {
         identifier: loginIdentifier,
         password: loginPassword
       });
@@ -58,10 +73,11 @@ const [message, setMessage] = useState('');
 
       console.log(res.data);
       //alert(`Welcome back, ${res.data.username}!`);
-sessionStorage.setItem('token', res.data.token);
-      sessionStorage.setItem('username', res.data.username);
-      window.location.href = '/home';
-    } catch (err) {
+localStorage.setItem('token', res.data.token);
+localStorage.setItem('username', res.data.username);
+
+
+navigate('/home');    } catch (err) {
       console.error('❌ Login error:', err.response ? err.response.data : err.message);
     setMessage('Login failed. Please check your credentials.');
     }

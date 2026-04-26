@@ -10,7 +10,7 @@ export default function useWishlist() {
   const fetchWishlist = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/wishlist",
+        "https://jelidressshop-1-1.onrender.com/api/wishlist",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,14 +37,14 @@ export default function useWishlist() {
     try {
       if (wishlistIds.includes(productId)) {
         await axios.delete(
-          `http://localhost:5000/api/wishlist/remove/${productId}`,
+          `https://jelidressshop-1-1.onrender.com/api/wishlist/remove/${productId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
       } else {
         await axios.post(
-          "http://localhost:5000/api/wishlist/add",
+          "https://jelidressshop-1-1.onrender.com/api/wishlist/add",
           { productId },
           {
             headers: { Authorization: `Bearer ${token}` },

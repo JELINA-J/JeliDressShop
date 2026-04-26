@@ -16,7 +16,7 @@ const Wishlist = () => {
   const fetchWishlist = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/wishlist",
+        "https://jelidressshop-1-1.onrender.com/api/wishlist",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -49,7 +49,7 @@ const Wishlist = () => {
 
     try {
       await axios.delete(
-        `http://localhost:5000/api/wishlist/remove/${productId}`,
+        `https://jelidressshop-1-1.onrender.com/api/wishlist/remove/${productId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
