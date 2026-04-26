@@ -35,12 +35,12 @@ const handleRegister = async (e) => {
     );
 
     console.log('✅ Registered:', res.data);
-    setMessage('Registered successfully! 🎉 Login to continue');
+    setMessage('Registered successfully! 🎉');
 
     // OPTIONAL: store token
     if (res.data.token) {
-      sessionStorage.setItem('token', res.data.token);
-      sessionStorage.setItem('username', res.data.username);
+      localStorage.setItem('token', res.data.token);
+localStorage.setItem('username', res.data.username);
     }
 
     // ✅ Redirect using React Router
