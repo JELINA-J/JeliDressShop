@@ -137,7 +137,7 @@ const toggleWishlist = async (e, productId) => {
     <div className="home-page">
       {/* Hero Section */}
       <section id="hero">
-        <h1>Welcome back, {username}! 🎉</h1>
+        <h1>Welcome {username}! 🎉</h1>
         <h4>Trade-in offer</h4>
         <h2>Super value deals</h2>
         <h1>On all properties</h1>
