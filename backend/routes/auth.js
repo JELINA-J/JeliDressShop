@@ -5,18 +5,32 @@ import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-// ================= REGISTER =================
+
+// ✅ REGISTER
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ name, email, password: hashedPassword });
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword
+    });
+
     await newUser.save();
 
+    // 🔥 AUTO LOGIN TOKEN
+    const token = jwt.sign(
+      { userId: newUser._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
     res.status(201).json({
-      message: 'User registered successfully'
+      token,
+      username: newUser.name
     });
 
   } catch (err) {
@@ -25,7 +39,8 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// ================= LOGIN =================
+
+// ✅ LOGIN
 router.post('/login', async (req, res) => {
   try {
     const { identifier, password } = req.body;
@@ -39,6 +54,7 @@ router.post('/login', async (req, res) => {
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -59,5 +75,4 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// ✅ ALWAYS export at the END
 export default router;
