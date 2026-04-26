@@ -22,37 +22,29 @@ const [message, setMessage] = useState('');
 
 
   // Handler for register
-  const handleRegister = async (e) => {
-<<<<<<< HEAD
+const handleRegister = async (e) => {
   e.preventDefault();
   try {
-    const res = await axios.post('http://localhost:5000/api/auth/register', {
-      name: registerUsername,
-      email: registerEmail,
-      password: registerPassword
-    });
-=======
-    e.preventDefault();
-    try {
-      const res = await axios.post('https://jelidressshop-1-1.onrender.com/api/auth/register', {
+    const res = await axios.post(
+      'https://jelidressshop-1-1.onrender.com/api/auth/register',
+      {
         name: registerUsername,
         email: registerEmail,
         password: registerPassword
-      });
-      console.log('✅ Registered:', res.data);
-          setMessage('Registered successfully! 🎉.Login to continue');
->>>>>>> 6eb21d46897c185918f7a2f5076819a1d87f482d
+      }
+    );
 
     console.log('✅ Registered:', res.data);
+    setMessage('Registered successfully! 🎉 Login to continue');
 
-    // OPTIONAL: store token if backend returns it
+    // OPTIONAL: store token
     if (res.data.token) {
       sessionStorage.setItem('token', res.data.token);
       sessionStorage.setItem('username', res.data.username);
     }
 
-    // ✅ Redirect to home page
-    window.location.href = '/home';
+    // ✅ Redirect using React Router
+    navigate('/home');
 
   } catch (err) {
     console.error('❌ Register error:', err.response ? err.response.data : err.message);
