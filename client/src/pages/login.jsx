@@ -22,6 +22,7 @@ const [message, setMessage] = useState('');
 
 
   // Handler for register
+// Handler for register
 const handleRegister = async (e) => {
   e.preventDefault();
   try {
@@ -35,20 +36,28 @@ const handleRegister = async (e) => {
     );
 
     console.log('✅ Registered:', res.data);
-    setMessage('Registered successfully! 🎉');
-
-     const username = res.data.name || res.data.username || registerUsername;
+    
+    // ✅ IMPORTANT: Store token FIRST
+    if (res.data.token) {
+      localStorage.setItem('token', res.data.token);
+    }
+    
+    // ✅ Store username correctly (check what your backend returns)
+    const username = res.data.name || res.data.username || registerUsername;
     localStorage.setItem('username', username);
-
-    // ✅ Redirect using React Router
-    navigate('/home');
+    
+    setMessage('Registered successfully! 🎉');
+    
+    // ✅ Small delay to ensure localStorage is updated before navigation
+    setTimeout(() => {
+      navigate('/home');
+    }, 100);
 
   } catch (err) {
     console.error('❌ Register error:', err.response ? err.response.data : err.message);
     setMessage('Registration failed. Please try again.');
   }
 };
-
   // Handler for login (implement your backend route later)
   const handleLogin = async (e) => {
     e.preventDefault();
