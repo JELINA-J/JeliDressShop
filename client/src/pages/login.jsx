@@ -6,22 +6,27 @@ const AuthPage = () => {
   const navigate = useNavigate();
 
   const [activeForm, setActiveForm] = useState('login');
+
+  // Register states
   const [registerUsername, setRegisterUsername] = useState('');
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
+
+  // Login states
   const [loginIdentifier, setLoginIdentifier] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Handler for register with auto-login
+  // ================= REGISTER =================
   const handleRegister = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       // Step 1: Register
-      const registerRes = await axios.post(
+      await axios.post(
         'https://jelidressshop-1-1.onrender.com/api/auth/register',
         {
           name: registerUsername,
@@ -30,9 +35,7 @@ const AuthPage = () => {
         }
       );
 
-      console.log('Registration successful:', registerRes.data);
-      
-      // Step 2: Auto login
+      // Step 2: Auto Login
       const loginRes = await axios.post(
         'https://jelidressshop-1-1.onrender.com/api/auth/login',
         {
@@ -41,40 +44,32 @@ const AuthPage = () => {
         }
       );
 
-      console.log('Auto-login successful:', loginRes.data);
-      
-      // Step 3: Store credentials
-      if (loginRes.data.token) {
-        localStorage.setItem('token', loginRes.data.token);
-      }
-      
-      const username = loginRes.data.username || loginRes.data.name || registerUsername;
+      // Step 3: Store token & username
+      localStorage.setItem('token', loginRes.data.token);
+
+      const username =
+        loginRes.data.username ?? registerUsername;
+
       localStorage.setItem('username', username);
-      
-      // Step 4: Verify storage
-      console.log('Token in localStorage:', localStorage.getItem('token'));
-      console.log('Username in localStorage:', localStorage.getItem('username'));
-      
+
       setMessage('Registered and logged in successfully! 🎉');
-      
-      // Step 5: Navigate
-      setTimeout(() => {
-        navigate('/home');
-      }, 100);
-      
+
+      // Step 4: Navigate
+      navigate('/home');
+
     } catch (err) {
-      console.error('Registration error:', err.response?.data || err.message);
-      setMessage(err.response?.data?.message || 'Registration failed. Please try again.');
+      console.error('Register error:', err.response?.data || err.message);
+      setMessage(err.response?.data?.message || 'Registration failed.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handler for login
+  // ================= LOGIN =================
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       const res = await axios.post(
         'https://jelidressshop-1-1.onrender.com/api/auth/login',
@@ -83,24 +78,18 @@ const AuthPage = () => {
           password: loginPassword
         }
       );
-      
-      console.log('Login response:', res.data);
-      
-      if (res.data.token) {
-        localStorage.setItem('token', res.data.token);
-      }
-      
-      const username = res.data.username || res.data.name || loginIdentifier;
+
+      localStorage.setItem('token', res.data.token);
+
+      const username =
+        res.data.username ?? loginIdentifier;
+
       localStorage.setItem('username', username);
-      
-      console.log('Login - Token stored:', !!localStorage.getItem('token'));
-      
-      setMessage(`Welcome back, ${username}!`);
-      
-      setTimeout(() => {
-        navigate('/home');
-      }, 100);
-      
+
+      setMessage(`Welcome back, ${username}! 🎉`);
+
+      navigate('/home');
+
     } catch (err) {
       console.error('Login error:', err.response?.data || err.message);
       setMessage('Login failed. Please check your credentials.');
@@ -109,43 +98,71 @@ const AuthPage = () => {
     }
   };
 
+  // ================= UI =================
   return (
     <div className="Account-page">
       <div className="row">
+
         <div className="col-2">
-          {message && <p style={{ color: message.includes('failed') ? 'red' : 'green' }}>{message}</p>}
-          <img src="images/loginimage.png" style={{ width: '115%' }} alt="Login" />
+          {message && (
+            <p style={{ color: message.includes('failed') ? 'red' : 'green' }}>
+              {message}
+            </p>
+          )}
+          <img
+            src="images/loginimage.png"
+            style={{ width: '115%' }}
+            alt="Login"
+          />
         </div>
 
         <div className="col-2">
           <div className="form-container">
+
+            {/* Toggle Buttons */}
             <div className="form-btn">
               <span
                 onClick={() => setActiveForm('login')}
-                style={{ color: activeForm === 'login' ? '#088178' : 'rgb(20, 19, 19)', cursor: 'pointer' }}
+                style={{
+                  color: activeForm === 'login' ? '#088178' : '#000',
+                  cursor: 'pointer'
+                }}
               >
                 Login
               </span>
+
               <span
                 onClick={() => setActiveForm('register')}
-                style={{ color: activeForm === 'register' ? '#088178' : 'rgb(20, 19, 19)', cursor: 'pointer' }}
+                style={{
+                  color: activeForm === 'register' ? '#088178' : '#000',
+                  cursor: 'pointer'
+                }}
               >
                 Register
               </span>
+
               <hr
-                id="indicator"
                 style={{
-                  transform: activeForm === 'login' ? 'translateX(50px)' : 'translateX(150px)',
-                  transition: 'transform 0.5s'
+                  transform:
+                    activeForm === 'login'
+                      ? 'translateX(50px)'
+                      : 'translateX(150px)',
+                  transition: '0.5s'
                 }}
               />
             </div>
 
-            {/* Login form */}
-            <form onSubmit={handleLogin} id="loginform" style={{
-              transform: activeForm === 'login' ? 'translateX(300px)' : 'translateX(0px)',
-              transition: 'transform 0.5s'
-            }}>
+            {/* LOGIN FORM */}
+            <form
+              onSubmit={handleLogin}
+              style={{
+                transform:
+                  activeForm === 'login'
+                    ? 'translateX(300px)'
+                    : 'translateX(0px)',
+                transition: '0.5s'
+              }}
+            >
               <input
                 type="text"
                 placeholder="Username or Email"
@@ -154,6 +171,7 @@ const AuthPage = () => {
                 required
                 disabled={isLoading}
               />
+
               <input
                 type="password"
                 placeholder="Password"
@@ -162,17 +180,23 @@ const AuthPage = () => {
                 required
                 disabled={isLoading}
               />
-              <button type="submit" className="login-btn" disabled={isLoading}>
+
+              <button type="submit" disabled={isLoading}>
                 {isLoading ? 'Loading...' : 'Login'}
               </button>
-              <a href="#">Forget Password</a>
             </form>
 
-            {/* Register form */}
-            <form onSubmit={handleRegister} id="regform" style={{
-              transform: activeForm === 'register' ? 'translateX(0px)' : 'translateX(300px)',
-              transition: 'transform 0.5s'
-            }}>
+            {/* REGISTER FORM */}
+            <form
+              onSubmit={handleRegister}
+              style={{
+                transform:
+                  activeForm === 'register'
+                    ? 'translateX(0px)'
+                    : 'translateX(300px)',
+                transition: '0.5s'
+              }}
+            >
               <input
                 type="text"
                 placeholder="Username"
@@ -181,6 +205,7 @@ const AuthPage = () => {
                 required
                 disabled={isLoading}
               />
+
               <input
                 type="email"
                 placeholder="Email"
@@ -189,6 +214,7 @@ const AuthPage = () => {
                 required
                 disabled={isLoading}
               />
+
               <input
                 type="password"
                 placeholder="Password"
@@ -197,12 +223,15 @@ const AuthPage = () => {
                 required
                 disabled={isLoading}
               />
-              <button type="submit" className="login-btn" disabled={isLoading}>
+
+              <button type="submit" disabled={isLoading}>
                 {isLoading ? 'Loading...' : 'Register'}
               </button>
             </form>
+
           </div>
         </div>
+
       </div>
     </div>
   );
