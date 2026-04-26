@@ -39,7 +39,7 @@ const handleRegister = async (e) => {
 
     // OPTIONAL: store token
     localStorage.setItem('token', res.data.token);
-localStorage.setItem('username', res.data.username);
+localStorage.setItem('username', res.data.name);
 
     // ✅ Redirect using React Router
     navigate('/home');
