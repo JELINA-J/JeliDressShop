@@ -38,10 +38,8 @@ const handleRegister = async (e) => {
     setMessage('Registered successfully! 🎉');
 
     // OPTIONAL: store token
-    if (res.data.token) {
-      localStorage.setItem('token', res.data.token);
+    localStorage.setItem('token', res.data.token);
 localStorage.setItem('username', res.data.username);
-    }
 
     // ✅ Redirect using React Router
     navigate('/home');
