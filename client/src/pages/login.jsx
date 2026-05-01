@@ -20,37 +20,35 @@ const AuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // ================= REGISTER =================
-const handleRegister = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  try {
-    const res = await axios.post(
-      'https://jelidressshop-1-1.onrender.com/api/auth/register',
-      {
-        name: registerUsername,
-        email: registerEmail,
-        password: registerPassword
-      }
-    );
+    try {
+      const res = await axios.post(
+        'https://jelidressshop-1-1.onrender.com/api/auth/register',
+        {
+          name: registerUsername,
+          email: registerEmail,
+          password: registerPassword
+        }
+      );
 
-    // ✅ Directly use register response
-    localStorage.setItem('token', res.data.token);
+      localStorage.setItem('token', res.data.token);
+      const username = res.data.username ?? registerUsername;
+      localStorage.setItem('username', username);
 
-    const username = res.data.username ?? registerUsername;
-    localStorage.setItem('username', username);
+      setMessage(`Welcome, ${username}! 🎉`);
+      navigate('/home');
 
-    setMessage(`Welcome, ${username}! 🎉`);
+    } catch (err) {
+      console.error('Register error:', err.response?.data || err.message);
+      setMessage(err.response?.data?.message || 'Registration failed.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    navigate('/home');
-
-  } catch (err) {
-    console.error('Register error:', err.response?.data || err.message);
-    setMessage(err.response?.data?.message || 'Registration failed.');
-  } finally {
-    setIsLoading(false);
-  }
-};
   // ================= LOGIN =================
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -66,14 +64,10 @@ const handleRegister = async (e) => {
       );
 
       localStorage.setItem('token', res.data.token);
-
-      const username =
-        res.data.username ?? loginIdentifier;
-
+      const username = res.data.username ?? loginIdentifier;
       localStorage.setItem('username', username);
 
       setMessage(`Welcome back, ${username}! 🎉`);
-
       navigate('/home');
 
     } catch (err) {
@@ -88,99 +82,136 @@ const handleRegister = async (e) => {
   return (
     <div className="Account-page">
       <div className="row">
-        <div className="col-2">
-{message && <p style={{ color: 'green' }}>{message}</p>}
 
-          <img src="images/loginimage.png" style={{ width: '115%' }} alt="Login" />
+        <div className="col-2">
+          {message && (
+            <p style={{ color: message.includes('failed') ? 'red' : 'green' }}>
+              {message}
+            </p>
+          )}
+
+          <img
+            src="images/loginimage.png"
+            style={{ width: '115%' }}
+            alt="Login"
+          />
         </div>
 
         <div className="col-2">
           <div className="form-container">
+
             <div className="form-btn">
               <span
                 onClick={() => setActiveForm('login')}
-                style={{ color: activeForm === 'login' ? '#088178' : 'rgb(20, 19, 19)' }}
+                style={{
+                  color: activeForm === 'login' ? '#088178' : 'rgb(20, 19, 19)'
+                }}
               >
                 Login
               </span>
+
               <span
                 onClick={() => setActiveForm('register')}
-                style={{ color: activeForm === 'register' ? '#088178' : 'rgb(20, 19, 19)' }}
+                style={{
+                  color: activeForm === 'register' ? '#088178' : 'rgb(20, 19, 19)'
+                }}
               >
                 Register
               </span>
+
               <hr
                 id="indicator"
                 style={{
-                  transform: activeForm === 'login' ? 'translateX(50px)' : 'translateX(150px)',
+                  transform: activeForm === 'login'
+                    ? 'translateX(50px)'
+                    : 'translateX(150px)',
                   transition: 'transform 0.5s'
                 }}
               />
             </div>
 
-            {/* Login form */}
+            {/* LOGIN FORM */}
             <form
               onSubmit={handleLogin}
               id="loginform"
               style={{
-                transform: activeForm === 'login' ? 'translateX(300px)' : 'translateX(0px)',
+                transform: activeForm === 'login'
+                  ? 'translateX(300px)'
+                  : 'translateX(0px)',
                 transition: 'transform 0.5s'
               }}
             >
               <input
                 type="text"
-                name="identifier"
                 placeholder="Username or Email"
                 value={loginIdentifier}
                 onChange={(e) => setLoginIdentifier(e.target.value)}
+                required
+                disabled={isLoading}
               />
+
               <input
                 type="password"
-                name="password"
                 placeholder="Password"
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
+                required
+                disabled={isLoading}
               />
 
-              <button type="submit" className="login-btn">Login</button>
+              <button type="submit" className="login-btn" disabled={isLoading}>
+                {isLoading ? 'Loading...' : 'Login'}
+              </button>
+
               <a href="#">Forget Password</a>
             </form>
 
-            {/* Register form */}
+            {/* REGISTER FORM */}
             <form
               onSubmit={handleRegister}
               id="regform"
               style={{
-                transform: activeForm === 'register' ? 'translateX(0px)' : 'translateX(300px)',
+                transform: activeForm === 'register'
+                  ? 'translateX(0px)'
+                  : 'translateX(300px)',
                 transition: 'transform 0.5s'
               }}
             >
               <input
                 type="text"
-                name="identifier"
                 placeholder="Username"
                 value={registerUsername}
                 onChange={(e) => setRegisterUsername(e.target.value)}
+                required
+                disabled={isLoading}
               />
+
               <input
                 type="email"
-                name="email"
                 placeholder="Email"
                 value={registerEmail}
                 onChange={(e) => setRegisterEmail(e.target.value)}
+                required
+                disabled={isLoading}
               />
+
               <input
                 type="password"
-                name="password"
                 placeholder="Password"
                 value={registerPassword}
                 onChange={(e) => setRegisterPassword(e.target.value)}
+                required
+                disabled={isLoading}
               />
-              <button type="submit" className="login-btn">Register</button>
+
+              <button type="submit" className="login-btn" disabled={isLoading}>
+                {isLoading ? 'Loading...' : 'Register'}
+              </button>
             </form>
 
           </div>
         </div>
+
       </div>
     </div>
   );
