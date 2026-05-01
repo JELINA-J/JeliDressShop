@@ -88,136 +88,99 @@ const handleRegister = async (e) => {
   return (
     <div className="Account-page">
       <div className="row">
-
         <div className="col-2">
-          {message && (
-            <p style={{ color: message.includes('failed') ? 'red' : 'green' }}>
-              {message}
-            </p>
-          )}
-          <img
-            src="images/loginimage.png"
-            style={{ width: '115%' }}
-            alt="Login"
-          />
+{message && <p style={{ color: 'green' }}>{message}</p>}
+
+          <img src="images/loginimage.png" style={{ width: '115%' }} alt="Login" />
         </div>
 
         <div className="col-2">
           <div className="form-container">
-
-            {/* Toggle Buttons */}
             <div className="form-btn">
               <span
                 onClick={() => setActiveForm('login')}
-                style={{
-                  color: activeForm === 'login' ? '#088178' : '#000',
-                  cursor: 'pointer'
-                }}
+                style={{ color: activeForm === 'login' ? '#088178' : 'rgb(20, 19, 19)' }}
               >
                 Login
               </span>
-
               <span
                 onClick={() => setActiveForm('register')}
-                style={{
-                  color: activeForm === 'register' ? '#088178' : '#000',
-                  cursor: 'pointer'
-                }}
+                style={{ color: activeForm === 'register' ? '#088178' : 'rgb(20, 19, 19)' }}
               >
                 Register
               </span>
-
               <hr
+                id="indicator"
                 style={{
-                  transform:
-                    activeForm === 'login'
-                      ? 'translateX(50px)'
-                      : 'translateX(150px)',
-                  transition: '0.5s'
+                  transform: activeForm === 'login' ? 'translateX(50px)' : 'translateX(150px)',
+                  transition: 'transform 0.5s'
                 }}
               />
             </div>
 
-            {/* LOGIN FORM */}
+            {/* Login form */}
             <form
               onSubmit={handleLogin}
+              id="loginform"
               style={{
-                transform:
-                  activeForm === 'login'
-                    ? 'translateX(300px)'
-                    : 'translateX(0px)',
-                transition: '0.5s'
+                transform: activeForm === 'login' ? 'translateX(300px)' : 'translateX(0px)',
+                transition: 'transform 0.5s'
               }}
             >
               <input
                 type="text"
+                name="identifier"
                 placeholder="Username or Email"
                 value={loginIdentifier}
                 onChange={(e) => setLoginIdentifier(e.target.value)}
-                required
-                disabled={isLoading}
               />
-
               <input
                 type="password"
+                name="password"
                 placeholder="Password"
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
-                required
-                disabled={isLoading}
               />
 
-              <button type="submit" disabled={isLoading}>
-                {isLoading ? 'Loading...' : 'Login'}
-              </button>
+              <button type="submit" className="login-btn">Login</button>
+              <a href="#">Forget Password</a>
             </form>
 
-            {/* REGISTER FORM */}
+            {/* Register form */}
             <form
               onSubmit={handleRegister}
+              id="regform"
               style={{
-                transform:
-                  activeForm === 'register'
-                    ? 'translateX(0px)'
-                    : 'translateX(300px)',
-                transition: '0.5s'
+                transform: activeForm === 'register' ? 'translateX(0px)' : 'translateX(300px)',
+                transition: 'transform 0.5s'
               }}
             >
               <input
                 type="text"
+                name="identifier"
                 placeholder="Username"
                 value={registerUsername}
                 onChange={(e) => setRegisterUsername(e.target.value)}
-                required
-                disabled={isLoading}
               />
-
               <input
                 type="email"
+                name="email"
                 placeholder="Email"
                 value={registerEmail}
                 onChange={(e) => setRegisterEmail(e.target.value)}
-                required
-                disabled={isLoading}
               />
-
               <input
                 type="password"
+                name="password"
                 placeholder="Password"
                 value={registerPassword}
                 onChange={(e) => setRegisterPassword(e.target.value)}
-                required
-                disabled={isLoading}
               />
-
-              <button type="submit" disabled={isLoading}>
-                {isLoading ? 'Loading...' : 'Register'}
-              </button>
+              <button type="submit" className="login-btn">Register</button>
             </form>
 
           </div>
         </div>
-
       </div>
     </div>
   );
