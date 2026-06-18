@@ -29,6 +29,7 @@ This project demonstrates practical full-stack web development using the **MERN 
 * 🔍 Product Search
 * 👗 Product Details Page
 * ➕ Add to Cart
+*  ❤️ Wishlist Feature
 * 📦 Size Selection
 * 🔢 Quantity Selection
 * 🛒 Shopping Cart Management
@@ -94,19 +95,6 @@ JeliDressShop/
 ## 🌐 Live Demo
 
 **https://jelidressshop-2.onrender.com**
-
----
-
-## 💡 Future Enhancements
-
-* ❤️ Wishlist Feature
-* 💳 Online Payment Integration
-* 📦 Order Tracking
-* ⭐ Product Ratings & Reviews
-* 👤 User Profile Management
-* 🛠️ Admin Dashboard
-* 📧 Email Notifications
-* 🤖 AI-based Product Recommendation System
 
 ---
 
