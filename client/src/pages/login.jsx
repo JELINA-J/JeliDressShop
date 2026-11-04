@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./AuthPage.css";
-
+import loginImage from "/images/loginimage.png";
 const API_URL = "https://jelidressshop-1-1.onrender.com";
 
 const api = axios.create({
