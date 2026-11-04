@@ -45,8 +45,7 @@
       rgba(28, 21, 17, 0.18) 45%,
       rgba(28, 21, 17, 0.76) 100%
     ),
-    url("/images/loginimage.png");
-
+url("../../public/images/loginimage.png");
   background-position: center;
   background-size: cover;
   display: flex;
