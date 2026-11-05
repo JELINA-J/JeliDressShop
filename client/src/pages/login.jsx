@@ -16,14 +16,12 @@ const AuthPage = () => {
 
   const [activeForm, setActiveForm] = useState("login");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState(null);
 
   const [registerUsername, setRegisterUsername] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [loginIdentifier, setLoginIdentifier] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -93,10 +91,7 @@ const AuthPage = () => {
       return;
     }
 
-    if (registerPassword !== confirmPassword) {
-      showToast("Passwords do not match.", "error");
-      return;
-    }
+   
 
     setIsLoading(true);
 
@@ -166,10 +161,9 @@ const AuthPage = () => {
 
   // SWITCH BETWEEN LOGIN AND REGISTER
   const switchForm = (form) => {
-    setActiveForm(form);
-    setShowPassword(false);
-    setShowConfirm(false);
-  };
+  setActiveForm(form);
+  setShowPassword(false);
+};
 
   return (
     <div className="jeli-auth-page">
