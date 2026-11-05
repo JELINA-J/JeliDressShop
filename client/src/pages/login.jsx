@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./AuthPage.css";
+
 const API_URL = "https://jelidressshop-1-1.onrender.com";
 
 const api = axios.create({
@@ -195,6 +196,11 @@ const AuthPage = () => {
           </button>
         </div>
       )}
+      <img
+    src="/images/logo.png"
+    alt="JELI Logo"
+    className="page-logo"
+  />
 
       <div className="auth-shell">
 
@@ -470,51 +476,7 @@ const AuthPage = () => {
                   )}
                 </div>
 
-                {/* CONFIRM PASSWORD */}
-                <div className="auth-field">
-                  <label htmlFor="confirmPassword">
-                    Confirm Password
-                  </label>
-
-                  <div className="password-wrapper">
-                    <input
-                      id="confirmPassword"
-                      type={showConfirm ? "text" : "password"}
-                      placeholder="Re-enter your password"
-                      value={confirmPassword}
-                      onChange={(e) =>
-                        setConfirmPassword(e.target.value)
-                      }
-                      required
-                      autoComplete="new-password"
-                      disabled={isLoading}
-                    />
-
-                    <button
-                      type="button"
-                      className="password-toggle"
-                      onClick={() =>
-                        setShowConfirm(!showConfirm)
-                      }
-                    >
-                      {showConfirm ? "Hide" : "Show"}
-                    </button>
-                  </div>
-
-                  {confirmPassword && (
-                    <small
-                      className={
-                        registerPassword === confirmPassword
-                          ? "password-match"
-                          : "password-mismatch"
-                      }
-                    >
-                      {registerPassword === confirmPassword
-                        ? "✓ Passwords match"
-                        : "Passwords do not match"}
-                    </small>
-                  )}
-                </div>
+                
 
                 <button
                   type="submit"
