@@ -620,25 +620,54 @@ height: 620px;
     padding: 45px 40px;
   }
 }
+@media (max-width: 900px) {
+  .jeli-auth-page {
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+    padding: 20px;
+  }
+
+  .auth-shell {
+    max-width: 600px;
+    height: auto;
+    min-height: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .auth-visual {
+    display: none;
+  }
+
+  .auth-mobile-brand {
+    display: block;
+    margin-bottom: 18px;
+  }
+
+  .auth-form-section {
+    padding: 35px 30px;
+    overflow: visible;
+  }
+}
 
 @media (max-width: 520px) {
   .jeli-auth-page {
-    padding: 18px 12px;
+    padding: 12px;
     align-items: flex-start;
   }
 
   .auth-shell {
     min-height: calc(100vh - 36px);
-    border-radius: 23px;
+    border-radius: 20px;
   }
 
   .auth-form-section {
     justify-content: center;
-    padding: 35px 22px;
+    padding: 28px 20px;
   }
 
   .auth-heading h2 {
-    font-size: 40px;
+    font-size: 36px;
   }
 
   .auth-tabs {
@@ -646,12 +675,12 @@ height: 620px;
   }
 
   .auth-form {
-    gap: 19px;
-    margin-top: 25px;
+    gap: 14px;
+    margin-top: 20px;
   }
 
   .auth-footer {
-    margin-top: 30px;
+    margin-top: 22px;
   }
 }
 
